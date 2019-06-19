@@ -1,0 +1,25 @@
+version: '2'
+services:
+  irods:
+    build:
+      context: docker/
+      args:
+        - ENV_IRODS_VERSION
+        - ENV_IRODS_EXT_CLANG_VERSION
+        - ENV_IRODS_EXT_CLANG_RUNTIME_VERSION
+    hostname: irods
+    ports:
+      - "1247:1247"
+      - "1248:1248"
+    environment:
+      RODS_PASSWORD: irods
+      PGPASSWORD: foobar
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+  irods-db:
+    image: postgres:${ENV_POSTGRES_VERSION}
+    hostname: irods-db
+    environment:
+      POSTGRES_PASSWORD: foobar
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
