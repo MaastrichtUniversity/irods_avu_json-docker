@@ -20,7 +20,8 @@ RUN apt-get update && \
     g++ \
     make \
     cmake \
-    python-pip
+    python-pip \
+    python-virtualenv
     # }} end
 
 ENV IRODS_VERSION ${ENV_IRODS_VERSION}
@@ -39,13 +40,14 @@ RUN wget -qO - https://packages.irods.org/irods-signing-key.asc | apt-key add - 
     irods-externals-clang-runtime${ENV_IRODS_EXT_CLANG_RUNTIME_VERSION} \
     irods-externals-clang${ENV_IRODS_EXT_CLANG_VERSION} \
     # packages required for python rule engine
-    irods-rule-engine-plugin-python 
+    irods-rule-engine-plugin-python=${IRODS_VERSION}
 
 # Helper scripts
 RUN mkdir /opt/irods
 ADD setup_responses /etc/irods/setup_responses
 ADD setupdb.sh /opt/irods/setupdb.sh
 ADD add_rule_engine.py /opt/irods/add_rule_engine.py
+ADD add_env_var.py /opt/irods/add_env_var.py
 ADD ./bootstrap.sh /opt/irods/bootstrap.sh
 RUN chmod a+x /opt/irods/*
 

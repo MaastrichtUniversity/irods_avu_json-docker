@@ -16,7 +16,8 @@ fi
 cp /irods_avu_json-ruleset/rules/core.py /etc/irods/core.py
 
 # Install the python dependencies
-pip install -r /irods_avu_json-ruleset/requirements.txt
+virtualenv /opt/py2irods
+/opt/py2irods/bin/pip install -r /irods_avu_json-ruleset/requirements.txt
 
 # Build microservices
 mkdir -p /irods_avu_json-ruleset/microservices/build && \
@@ -41,6 +42,8 @@ if [[ ! -e /var/run/irods_installed ]]; then
 
     # Add python rule engine to iRODS
     /opt/irods/add_rule_engine.py /etc/irods/server_config.json python 1
+
+    /opt/irods/add_env_var.py /etc/irods/server_config.json PYTHONPATH /opt/py2irods/lib/python2.7/site-packages
 
     touch /var/run/irods_installed
 
