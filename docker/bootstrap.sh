@@ -12,12 +12,15 @@ if [[ ! -d /irods_avu_json-ruleset ]]; then
     git clone https://github.com/MaastrichtUniversity/irods_avu_json-ruleset.git /irods_avu_json-ruleset
 fi
 
-# Install the python ruleset
-cp /irods_avu_json-ruleset/rules/core.py /etc/irods/core.py
-
 # Install the python dependencies
 virtualenv /opt/py2irods
 /opt/py2irods/bin/pip install -r /irods_avu_json-ruleset/requirements.txt
+
+# Make the virtualenv available to the Python ruleset
+echo "import sys; sys.path.append('/opt/py2irods/lib/python2.7/site-packages')" > /etc/irods/core.py
+
+# Install the python ruleset
+cat /irods_avu_json-ruleset/rules/core.py >> /etc/irods/core.py
 
 # Build microservices
 mkdir -p /irods_avu_json-ruleset/microservices/build && \
@@ -42,8 +45,6 @@ if [[ ! -e /var/run/irods_installed ]]; then
 
     # Add python rule engine to iRODS
     /opt/irods/add_rule_engine.py /etc/irods/server_config.json python 1
-
-    /opt/irods/add_env_var.py /etc/irods/server_config.json PYTHONPATH /opt/py2irods/lib/python2.7/site-packages
 
     touch /var/run/irods_installed
 
