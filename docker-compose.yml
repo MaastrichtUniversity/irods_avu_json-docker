@@ -14,6 +14,7 @@ services:
     environment:
       RODS_PASSWORD: irods
       PGPASSWORD: foobar
+      PYTHONPATH: /opt/py2irods/lib/python2.7/site-packages
     volumes:
       - /etc/localtime:/etc/localtime:ro
   irods-db:

@@ -15,8 +15,33 @@ fi
 # Install the python ruleset
 cp /irods_avu_json-ruleset/rules/core.py /etc/irods/core.py
 
+# Add test_import rule
+cat >/irods_avu_json-ruleset/rules/test_import.r << EOF
+# Call with
+#
+# irule -r irods_rule_engine_plugin-python-instance -F test_import.r
+
+def main(rule_args, callback, rei):
+    import os
+    import jsonavu
+
+
+    pypath = os.environ.get('PYTHONPATH', "None")
+    all_env = os.environ
+
+
+    callback.writeLine("stdout", str(pypath))
+    callback.writeLine("stdout", str(all_env))
+
+
+INPUT null
+OUTPUT ruleExecOut
+EOF
+
+
 # Install the python dependencies
-pip install -r /irods_avu_json-ruleset/requirements.txt
+virtualenv /opt/py2irods
+/opt/py2irods/bin/pip install -r /irods_avu_json-ruleset/requirements.txt
 
 # Build microservices
 mkdir -p /irods_avu_json-ruleset/microservices/build && \
